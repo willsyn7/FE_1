@@ -1,0 +1,120 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Go (Backend)
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+api_binary
+main
+server/main
+server/api_binary
+
+# Go workspace file
+go.work.sum
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file (keep go.work but ignore sum)
+go.work.sum
+
+# IDE - Go
+.idea/
+*.swp
+*.swo
+*~
+
+# Frontend (Node.js/npm/yarn/pnpm)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Frontend build outputs
+dist/
+build/
+.next/
+out/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+
+# Frontend frameworks
+# React
+.DS_Store
+*.log
+
+# Vue
+dist-ssr/
+*.local
+
+# Angular
+.angular/
+
+# Svelte
+.svelte-kit/
+
+# Frontend package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Frontend environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE - General
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Optional: Coverage reports
+coverage/
+*.coverprofile

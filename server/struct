@@ -1,0 +1,12 @@
+my-project/
+├── cmd/
+│   └── api/
+│       └── main.go          # Entry point: Wires everything together and starts server
+├── internal/
+│   ├── config/              # Environment variables and configuration setup
+│   ├── handlers/            # HTTP logic: Parse requests, validate inputs, send JSON
+│   ├── models/              # Data structures (structs) for your entities
+│   └── store/               # Database logic (SQL queries) - sometimes called 'repository'
+├── go.mod                   # Dependency file
+├── go.sum                   # Checksums for dependencies
+└── Makefile                 # (Optional) Scripts to run, build, or test
