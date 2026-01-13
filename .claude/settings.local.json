@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go work sync:*)",
+      "Bash(go get:*)",
+      "Bash(timeout 15 air:*)"
+    ]
+  }
+}
