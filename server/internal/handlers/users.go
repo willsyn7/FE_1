@@ -12,6 +12,12 @@ import (
 	"ToDoGo/internal/config"
 	"ToDoGo/internal/models"
 )
+// type UserDataStruct struct {
+// 	ID	string `json :"id"`
+// 	UserName string `json:"user_name"`
+// 	Email	string `json:"email"`
+// 	CreatedAt string `json:"created_at"`
+// }
 
 type SignUpRequest struct {
 	UserName string `json:"user_name"`
@@ -34,6 +40,21 @@ Email string `json:"email"`
 type DeleteUserResponse struct{
 	Message string `json:"message"`
 }
+
+type GetUserDataRequest struct{
+	Email string `json:"email"`
+}
+
+type GetUserDataResponse struct{
+	ID	string `json :"id"`
+	UserName string `json:"user_name"`
+	Email	string `json:"email"`
+	CreatedAt string `json:"created_at"`
+
+	
+}
+
+
 
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
@@ -121,3 +142,49 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+
+
+func GetUserData(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+
+    var req GetUserDataRequest
+
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(map[string]string{"error": "invalid request body"})
+        return
+    }
+
+    if req.Email == "" {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(map[string]string{"error": "email is required"})
+        return
+    }
+
+    ctx := context.Background()
+    var userData models.User
+
+    err := config.DB.QueryRow(ctx,
+        "SELECT id, email, user_name, created_at FROM User_Table WHERE email = $1",
+        req.Email,
+    ).Scan(&userData.ID, &userData.Email, &userData.UserName, &userData.CreatedAt)
+
+    if err != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+        return
+    }  
+
+
+    fmt.Println(userData)
+
+    response := GetUserDataResponse{
+        ID:        userData.ID,
+        Email:     userData.Email,
+        UserName:  userData.UserName,
+        CreatedAt: userData.CreatedAt.Format(time.RFC3339),
+    }
+
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(response)
+}
