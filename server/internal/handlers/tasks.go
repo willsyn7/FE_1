@@ -43,8 +43,16 @@ function PostTasks(w http.ResponseWriter, r *http.Request){
 	
 	tasks := models.Tasks {
 		ID : uuid.New().String(),
-		UserID
+		User_id: 
+		Email: req.email,
+		completed: false;
+		created_at: time.Now()
 	}
+	ctx: context.Background();
+	_, err := config.DB.Exec(ctx,
+		"INSERT INTO Tasks_Table (id, user_id, task_name, completed, created_at) VALUES ($1, $2, $3, $4, $5",
+		[]
+	
 
 
 }
