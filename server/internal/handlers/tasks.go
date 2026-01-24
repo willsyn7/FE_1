@@ -1,58 +1,77 @@
 package handlers
 
-
-
 import (
-		"context"
+	"context"
 	"encoding/json"
 	"net/http"
 	"time"
-		// "fmt"
 
-	//pks to do stuff
 	"github.com/google/uuid"
 
 	"ToDoGo/internal/config"
-
-	//struct
 	"ToDoGo/internal/models"
-
 )
 
 type PostTaskRequest struct {
-Tasks : string `json:"tasks`
-Email : string `json:"email"`}
-
-
-type PostTaskRequest struct {
-ID string `json:"id"`
-Tasks: string `json:"tasks"`
-Email: string `json:"email"`
-created_at string `json:"created_at"`
+	UserID   string `json:"user_id"`
+	TaskName string `json:"task_name"`
 }
 
-function PostTasks(w http.ResponseWriter, r *http.Request){
-		w.Header().Set("Content-Type", "application/json");
+type PostTaskResponse struct {
+	ID        string `json:"id"`
+	UserID    string `json:"user_id"`
+	TaskName  string `json:"task_name"`
+	CreatedAt string `json:"created_at"`
+}
 
-		var PostTaskRequest
+func PostTask(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var req PostTaskRequest
+
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(map[string]string{"error": "invalid request body"})
-	return
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid request body"})
+		return
 	}
-	
-	tasks := models.Tasks {
-		ID : uuid.New().String(),
-		User_id: 
-		Email: req.email,
-		completed: false;
-		created_at: time.Now()
+
+	if req.UserID == "" || req.TaskName == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "user_id and task_name are required"})
+		return
 	}
-	ctx: context.Background();
+
+	task := models.Tasks{
+		ID:        uuid.New().String(),
+		UserID:    req.UserID,
+		TaskName:  req.TaskName,
+		Completed: false,
+		CreatedAt: time.Now(),
+	}
+
+	ctx := context.Background()
 	_, err := config.DB.Exec(ctx,
-		"INSERT INTO Tasks_Table (id, user_id, task_name, completed, created_at) VALUES ($1, $2, $3, $4, $5",
-		[]
-	
+		"INSERT INTO Task_Table (id, user_id, task_name, completed, created_at) VALUES ($1, $2, $3, $4, $5)",
+		task.ID,
+		task.UserID,
+		task.TaskName,
+		task.Completed,
+		task.CreatedAt,
+	)
 
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
 
+	response := PostTaskResponse{
+		ID:        task.ID,
+		UserID:    task.UserID,
+		TaskName:  task.TaskName,
+		CreatedAt: task.CreatedAt.Format(time.RFC3339),
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
 }
